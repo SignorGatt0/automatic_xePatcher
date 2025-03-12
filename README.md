@@ -7,4 +7,4 @@ find your ___input___ folder in the program and put (for now) only the .xex you 
 ### how to run:
 (for now) run the ___test.py___
 
-#THIS IS STILL NOT FINISHED
+# THIS IS STILL NOT FINISHED
