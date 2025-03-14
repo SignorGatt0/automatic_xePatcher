@@ -5,6 +5,4 @@ this project require ___XePatcher___ to be putted on the __same__ directory of t
 find your ___input___ folder in the program and put (for now) only the .xex you want to patch (you can put more than one file at onece), for ex.: (___default.xex___).
 
 ### how to run:
-(for now) run the ___test.py___
-
-# THIS IS STILL NOT FINISHED
+(for now) run the ___main.py___
