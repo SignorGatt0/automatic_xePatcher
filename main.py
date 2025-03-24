@@ -4,12 +4,13 @@ import subprocess
 import os
 import shutil
 from tkinter import ttk
+from threading import Thread
 # Create the main window
 window = tk.Tk()
 window.title("automatic_xePatcher")
 
 # Set the window size
-window.geometry("600x250")
+window.geometry("720x480")
 
 # Change the background color using configure
 window.configure(bg='grey')
@@ -20,10 +21,24 @@ output = None
 def ask_what_directory_to_use_input():
     global input_
     input_ = askdirectory(title='select a directory') # shows dialog box for asking the path to the user
+    lable2 = tk.Label(text = input_, bg = "white", fg = "black",relief = "groove",width=80)
+    lable2.place(relx = 4.0, 
+                  rely = 0.0,
+                  anchor ='ne')
+    lable2.pack()
 
 def ask_what_directory_to_use_output():
     global output
     output = askdirectory(title='select a directory') # shows dialog box for asking the path to the user
+
+def show_founded_xex():
+    pass
+
+def show_selected_input():
+    pass
+
+def show_selected_output():
+    pass
 
 def start_patching(): # the program starts to patching files
     """
@@ -37,6 +52,7 @@ def start_patching(): # the program starts to patching files
 
         for file in files:
             if ".xex" in file:
+
                 xex_files_found.append(file)
 
                 file_to_patch = str(file) #convert the type list to a string for the comand
@@ -65,27 +81,35 @@ def start_patching(): # the program starts to patching files
         pass #TODO say to the user to select a directory
 
 def search_and_patch(all_files,last_foulder):
+    threads = []
     for file in all_files:
-        if ".xex" in file: # file to patch found
+        t = Thread(target=for_threading, args=(file,last_foulder))
+        t.start()
+        threads.append(t)
+
+    # Wait all threads to finish.
+    for t in threads:
+        t.join()
+        
+def for_threading(file,last_foulder):
+    if ".xex" in file: # file to patch found
             file_to_patch = str(f"{last_foulder}/{file}") #convert the type list to a string for the comand
             subprocess.run(f"XePatcher\XexTool.exe -m r -r a \"{file_to_patch}\"") # comand for patching a file
 
-        elif not "." in file: # directory found
-            new_all_file = os.listdir(f"{last_foulder}/{file}")
-            for file_ in new_all_file:
-                if ".xex" in file_: # file to patch found
-                    file_to_patch_ = str(f"{last_foulder}/{file}/{file_}") #convert the type list to a string for the command
-                    subprocess.run(f"XePatcher\XexTool.exe -m r -r a \"{file_to_patch_}\"") # comand for patching a file
-                else:
-                    pass
-
+    elif not "." in file: # directory found
+        new_all_file = os.listdir(f"{last_foulder}/{file}")
+        for file_ in new_all_file:
+            if ".xex" in file_: # file to patch found
+                file_to_patch_ = str(f"{last_foulder}/{file}/{file_}") #convert the type list to a string for the command
+                subprocess.run(f"XePatcher\XexTool.exe -m r -r a \"{file_to_patch_}\"") # comand for patching a file
+            else:
+                pass
 
 # getting the path to use
 button1 = tk.Button(
                    command=ask_what_directory_to_use_input,
                    activebackground="white", 
                    activeforeground="white",
-                   anchor="center",
                    bd=2,
                    bg="lightgray",
                    cursor="hand2",
@@ -96,13 +120,13 @@ button1 = tk.Button(
                    highlightbackground="black",
                    highlightcolor="green",
                    highlightthickness=2,
-                   justify="center",
                    overrelief="raised",
                    padx=18,
                    pady=5,
-                   width=30,
+                   width=10,
                    wraplength=100,
                    text="SELECT THE INPUT FOLDER")
+
 button1.pack()
 
 button2 = tk.Button(
@@ -124,21 +148,21 @@ button2 = tk.Button(
                    overrelief="raised",
                    padx=18,
                    pady=5,
-                   width=30,
+                   width=10,
                    wraplength=100,
                    text="SELECT THE OUTPUT")
 button2.pack()
 
 button3 = tk.Button(
                    command=start_patching,
-                   activebackground="white", 
-                   activeforeground="white",
+                   activebackground="grey", 
+                   activeforeground="grey",
                    anchor="center",
                    bd=2,
-                   bg="lightgray",
+                   bg="black",
                    cursor="hand2",
-                   disabledforeground="white",
-                   fg="black",
+                   disabledforeground="grey",
+                   fg="white",
                    font=("Arial", 10),
                    height=2,
                    highlightbackground="black",
@@ -146,14 +170,16 @@ button3 = tk.Button(
                    highlightthickness=2,
                    justify="center",
                    overrelief="raised",
-                   padx=18,
+                   padx=20,
                    pady=5,
-                   width=30,
+                   width=5,
                    wraplength=100,
                    text="START PATCHING")
 button3.pack()
 
+
 #creating the text on screen
+
 lable1 = tk.Label(text = "If you don't select the output folder,\nthe file get all patched in the input folder without creating a copy of the .xex files", bg = "grey", fg = "white",relief = "groove")
 lable1.pack()
 window.mainloop()
